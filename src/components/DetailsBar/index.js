@@ -1,20 +1,20 @@
 import React from 'react';
-import {DetailItem as Item } from './Detail-item';
+import DetailItem from './Detail-item';
 
  const DetailsBar = (props) => {
-    if(props.topfive) {
-        const getPercent = (el) => (el[1] / props.total) * 100 ;
-        
-        // console.log(props.topfive,  props.total);
+    if(props.data) {
         return(
             <div className="details">
                 {
-                    props.topfive.map((el, index) => {
-                        return <Item key={index} percent={getPercent(el)} data={el}/>
+                    props.data.map((el, index) => {
+                        return <DetailItem key={index} category={el} totalSeconds={props.total}/>
                     })
                 }
             </div>
         )
+    }
+    else {
+        return null;
     }
    
 }

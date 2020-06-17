@@ -5,7 +5,8 @@ import Col from 'react-bootstrap/Col';
 import DiagramBar from '../DiagramBar';
 import DetailsBar from '../DetailsBar';
 import './style.sass';
-import {API_KEY, PROXY_URL, getTotalHours} from '../api';
+import CategoryFactory from '../../instances/category';
+import {API_KEY, PROXY_URL, getDaylyData} from '../api';
 
 
 class Home extends React.Component {
@@ -13,34 +14,33 @@ class Home extends React.Component {
     super(props);
     this.props = props
     this.state = {
-      topFive: []
+      categories: ''
     }
   }
 
   componentDidMount() {
-    getTotalHours((val) => {
-      let topFive = val.rows.slice(0, 5);
+    getDaylyData((val) => {
+      let res = val.rows;
+      const categories = new CategoryFactory().getCategories(res);
       let totalHours = () => {
         return val.rows.reduce((prev, next) => prev + +next[1], 0);
       }
-      this.setState({topFive: topFive, totalHours: totalHours()});
+      this.setState({categories: categories, totalHours: totalHours()});
     });
   }
 
 
   render() {
-    const TOP_FIVE = this.state.topFive;
-
+    const items = this.state.categories;
+    console.log(items);
       return(
         <Container>
           <Row className="home">
             <Col xs={6}>
-           
-              {/* <DiagramBar/> */}
+              <DiagramBar/>
             </Col>
             <Col xs={6}>
-                   <DetailsBar  topfive={TOP_FIVE} total={this.state.totalHours} />
-              
+              <DetailsBar  data={items} total={this.state.totalHours} />
             </Col>
           </Row>
         </Container>
